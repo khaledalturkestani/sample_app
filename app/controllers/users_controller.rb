@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,     only: :destroy
+  before_action :only_non_signed_in, only: [:new, :create]
 
   def destroy
     User.find(params[:id]).destroy
@@ -61,6 +62,12 @@ class UsersController < ApplicationController
       redirect_to signin_url, notice: "Please sign in."
     end
     # Alternate form: redirect_to signin_url, notice: "Please sign in." unless signed_in?
+  end
+
+  def only_non_signed_in
+    unless !signed_in?
+      redirect_to signin_url, notice: "You're already signed in!"
+    end
   end
   
   def correct_user
